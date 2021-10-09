@@ -4,8 +4,11 @@ import com.hendisantika.service.ELKService;
 import com.hendisantika.service.RestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,5 +32,13 @@ public class ELKController {
     public ELKController(ELKService service, RestService restService) {
         this.service = service;
         this.restService = restService;
+    }
+
+    @GetMapping(value = "/hello")
+    public String helloWorld() {
+        log.info("Inside Hello World Function");
+        String response = "Hello World! " + new Date();
+        log.info("Response => {}", response);
+        return response;
     }
 }
