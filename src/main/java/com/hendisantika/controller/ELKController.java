@@ -2,6 +2,7 @@ package com.hendisantika.controller;
 
 import com.hendisantika.service.ELKService;
 import com.hendisantika.service.RestService;
+import org.json.simple.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,5 +41,11 @@ public class ELKController {
         String response = "Hello World! " + new Date();
         log.info("Response => {}", response);
         return response;
+    }
+
+    @GetMapping(value = "/food-details")
+    public JSONArray foodDetails() {
+        log.info("Inside Food Detail Function");
+        return service.getAllFoodDetails();
     }
 }
