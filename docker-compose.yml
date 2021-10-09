@@ -1,0 +1,59 @@
+version: '3.9'
+services:
+  logger:
+    image: spring-boot-elk
+    ports:
+      - "8080:8080"
+    volumes:
+      - $HOME/app:/var/app
+    links:
+      - "logstash:logstash"
+    depends_on:
+      - kibana
+  filebeat:
+    image: hsmnzaydn/filebeat
+
+    links:
+      - "logstash:logstash"
+    volumes:
+      - /var/lib/docker:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - $HOME/app:/var/app
+
+
+  logstash:
+    image: hsmnzaydn/logstash
+    ports:
+      - "5044:5044"
+    volumes:
+      - $HOME/app:/var/app
+    links:
+      - "elasticsearch:elasticsearch"
+    depends_on:
+      - elasticsearch
+
+  elasticsearch:
+    image: elasticsearch:7.15.0
+    environment:
+      - discovery.type=single-node
+    volumes:
+      - $HOME/app:/usr/share/elasticsearch/data
+
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+
+  kibana:
+    image: kibana:7.15.0
+    environment:
+      SERVER_NAME: kibana.example.org
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    links:
+      - "elasticsearch:elasticsearch"
+    volumes:
+      - $HOME/app:/var/app
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+
