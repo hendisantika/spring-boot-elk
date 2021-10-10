@@ -1,4 +1,4 @@
-FROM logstash:7.15.0
+FROM docker.elastic.co/logstash/logstash:7.15.0
 
 USER root
 ENV ELASTICSEARCH_HOST "elasticsearch:9200"

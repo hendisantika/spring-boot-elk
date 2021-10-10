@@ -11,7 +11,7 @@ services:
     depends_on:
       - kibana
   filebeat:
-    image: hsmnzaydn/filebeat
+    image: hendisantika/filebeat
 
     links:
       - "logstash:logstash"
@@ -22,7 +22,7 @@ services:
 
 
   logstash:
-    image: hsmnzaydn/logstash
+    image: hendisantika/logstash
     ports:
       - "5044:5044"
     volumes:
@@ -33,7 +33,7 @@ services:
       - elasticsearch
 
   elasticsearch:
-    image: elasticsearch:7.15.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
     environment:
       - discovery.type=single-node
     volumes:
@@ -44,9 +44,10 @@ services:
       - "9300:9300"
 
   kibana:
-    image: kibana:7.15.0
+    image: docker.elastic.co/kibana/kibana:7.15.0
     environment:
       SERVER_NAME: kibana.example.org
+      SERVER_HOST: 0.0.0.0
       ELASTICSEARCH_URL: http://elasticsearch:9200
     links:
       - "elasticsearch:elasticsearch"
@@ -54,6 +55,11 @@ services:
       - $HOME/app:/var/app
     ports:
       - "5601:5601"
+    healthcheck:
+      test: [ 'CMD', 'curl', '-f', 'http://localhost:5601' ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     depends_on:
       - elasticsearch
 
