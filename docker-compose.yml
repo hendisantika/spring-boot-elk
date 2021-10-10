@@ -35,6 +35,9 @@ services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
     environment:
+      - "cluster.routing.allocation.disk.threshold_enabled=false"
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
       - discovery.type=single-node
     volumes:
       - $HOME/app:/usr/share/elasticsearch/data
@@ -42,6 +45,11 @@ services:
     ports:
       - "9200:9200"
       - "9300:9300"
+    healthcheck:
+      test: [ 'CMD', 'curl', '-f', 'http://localhost:9200' ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.15.0
